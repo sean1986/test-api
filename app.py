@@ -20,12 +20,6 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
 app.secret_key = "Sean"
 api = Api(app)
 
-
-@app.before_first_request
-def create_tables():
-    db.create_all()
-
-
 # creates /auth for logging in
 jwt = JWT(app, authenticate, get_identity)
 
@@ -41,3 +35,7 @@ api.add_resource(StoreList, "/stores")
 if __name__ == "__main__":
     db.init_app(app)
     app.run(port=5001, debug=True)
+
+    # @app.before_first_request
+    # def create_tables():
+    #     db.create_all()
