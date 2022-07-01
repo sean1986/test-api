@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-
 from datetime import timedelta
+from os import getenv as os_getenv
 
 from flask import Flask
 from flask_restful import Api
@@ -16,7 +16,15 @@ from security import authenticate, get_identity
 app = Flask(__name__)
 app.config["PROPAGATE_EXCEPTIONS"] = True
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
+
+# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
+
+database_uri = os_getenv("DATABASE_URL", "sqlite:///data.db")
+if database_uri.startswith("postgres://"):
+    database_uri = database_uri.replace("postgres://", "postgresql://")
+
+app.config["SQLALCHEMY_DATABASE_URI"] = database_uri
+
 app.secret_key = "Sean"
 api = Api(app)
 
